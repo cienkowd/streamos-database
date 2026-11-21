@@ -1,0 +1,19 @@
+# sekrety i dane: nigdy nie commitować
+.env
+*.dump
+*.bak
+*.csv
+.transfer/
+logs/
+
+# dokumenty (sprawozdania z danymi autora)
+*.docx
+*.pdf
+
+# narzędzia
+.idea/
+.vscode/
+.dbeaver/
+__pycache__/
+.claude/
+CLAUDE.md

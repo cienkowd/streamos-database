@@ -1,0 +1,27 @@
+name: database
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # hasła tylko dla jednorazowych kontenerów w CI
+      POSTGRES_PASSWORD: ci_only_password
+      MSSQL_SA_PASSWORD: Ci_only_Passw0rd!
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: PostgreSQL -> migracja -> SQL Server, wszystkie skrypty i testy
+        run: python run.py
+      - name: Logi
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: logs/

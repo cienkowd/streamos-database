@@ -1,0 +1,50 @@
+name: streamos
+
+services:
+  postgres:
+    build: .
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_cron
+      -c cron.database_name=streamos
+      -c cron.timezone=Europe/Warsaw
+      -c cron.use_background_workers=on
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-streamos_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?ustaw POSTGRES_PASSWORD w .env}
+      POSTGRES_DB: streamos
+    volumes:
+      # od PostgreSQL 18 wolumen montuje się do /var/lib/postgresql (nie .../data)
+      - pgdata:/var/lib/postgresql
+      - ./sql:/sql:ro
+    shm_size: 256mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d streamos"]
+      interval: 3s
+      retries: 40
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "${MSSQL_PORT:-1433}:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?ustaw MSSQL_SA_PASSWORD w .env}
+      MSSQL_AGENT_ENABLED: "true"
+      MSSQL_MEMORY_LIMIT_MB: 2048
+      TZ: Europe/Warsaw
+    volumes:
+      - mssqldata:/var/opt/mssql
+      - ./sql:/sql:ro
+      - ./.transfer:/transfer:ro   # pliki CSV z migracji PostgreSQL -> SQL Server
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 5s
+      retries: 40
+
+volumes:
+  pgdata:
+  mssqldata:

@@ -1,0 +1,12 @@
+{
+  "02b_kontrola_danych.sql": 0,
+  "03b_testy_uprawnien.sql": 4,
+  "05b_testy_perspektyw.sql": 1,
+  "09b_testy_trigger_emisja.sql": 9,
+  "10b_testy_reguly_sesje_rozliczenie.sql": 8,
+  "11b_testy_automatyzacji.sql": 1,
+  "13b_mssql_testy_funkcji_procedur.sql": 14,
+  "14b_mssql_testy_triggerow.sql": 17,
+  "15b_mssql_testy_uprawnien_perspektyw.sql": 6,
+  "16b_mssql_testy_automatyzacji.sql": 1
+}
