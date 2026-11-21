@@ -49,18 +49,18 @@ The database was built in PostgreSQL first, then moved to SQL Server: schema, al
 2.5 million rows, and every procedure, trigger, role and scheduled job.
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph PG["PostgreSQL 18"]
+        direction LR
         A["01–02: schema and<br/>2.5M synthetic rows"] --> B["03–11: roles, views,<br/>procedures, triggers, pg_cron"]
     end
     subgraph MS["SQL Server 2022"]
-        C["12: tables, PK, UNIQUE"] --> D["BULK INSERT<br/>with KEEPIDENTITY"]
-        D --> E["12b: FK, CHECK, indexes<br/>validate every row"]
-        E --> F["13–16: T-SQL procedures,<br/>triggers, roles, Agent job"]
+        direction LR
+        C["12: tables,<br/>PK, UNIQUE"] --> D["BULK INSERT<br/>KEEPIDENTITY"] --> E["12b: FK, CHECK,<br/>indexes"]
     end
-    B -- "COPY to CSV" --> D
-    E --> G{{"12c: same queries on both<br/>engines, identical results"}}
-    B --> G
+    PG -- "COPY to CSV" --> MS
+    MS --> G{{"12c: same queries on both engines,<br/>identical results"}}
+    G --> F["13–16: T-SQL procedures, triggers,<br/>roles, SQL Server Agent job"]
 ```
 
 The migration is checked three ways:
