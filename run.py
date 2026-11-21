@@ -91,6 +91,9 @@ def run_step(service: str, folder: str, file: str, is_test: bool, expected: dict
 
 
 def up() -> None:
+    # katalog na CSV musi powstać przed `compose up`: inaczej na Linuksie Docker tworzy go
+    # sam jako root (źródło bind mounta) i skrypt nie może do niego pisać
+    TRANSFER.mkdir(exist_ok=True)
     if compose("up", "-d", "--build", "--wait").returncode != 0:
         sys.exit("docker compose up nie powiódł się")
 
