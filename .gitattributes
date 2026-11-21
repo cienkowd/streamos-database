@@ -1,0 +1,6 @@
+# GitHub language stats: show both engines instead of one generic "SQL"
+sql/postgres/*.sql linguist-language=PLpgSQL
+sql/mssql/*.sql    linguist-language=TSQL
+
+* text=auto eol=lf
+*.png binary
